@@ -14,19 +14,66 @@
                 <li><a href="index.html">Home</a></li>
                 <li><a href="aboutPage.html">About me</a></li>
                 <li><a href="projectPage.html">Works</a></li>
+                <li><a href="#">Resume</a></li>
                 <li><a href="contactPage.html">Contact</a></li>
             </ul>
         </nav>
     </header>
 
-    <section>
-        <div class="content">
-            <p>Hi there, I'm</p>
-            <h1>Jasbeer Singh Chauhan</h1>
-            <p>I am Passionate Designer| |</p>
-            <a href="contactPage.html">Contact Me</a>
+    <main>
+        <section>
+            <div class="social-Media">
+            <div class="content">
+                <p>Hi there, I'm</p>
+                <h1>Jasbeer Singh Chauhan</h1>
+                <p id="typewriter"></p>
+                <a href="contactPage.html">Contact Me</a>
+            </div>
+            <div>
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=jasbeersinghchauhan230@gmail.com"><img src="gmail.svg" alt="Gmail Account"></a>
+                <a href="https://github.com/jasbeersinghchauhan"><img src="github.svg" alt="Github Account"></a>
+                <a href="https://www.linkedin.com/in/jasbeer-singh-chauhan-0086b9288/"><img src="linkedin.svg" alt="Linkedin Account"></a>
+            </div>
         </div>
-        <img src="portrait.jpg" height="200px" width="300px">
-    </section>
+        <span class="portrait">
+            <img src="portrait.jpg">
+        </span>
+        </section>
+    </main>
 </body>
+
+<script>
+    const text = "I am Passionate Designer";
+    const speed = 100;
+    const delay = 1000;
+
+    let index = 0;
+    let typing = true; 
+
+    function typeWriter() {
+        const element = document.getElementById("typewriter");
+
+        if (typing) {
+            if (index < text.length) {
+                element.textContent += text.charAt(index);
+                index++;
+                setTimeout(typeWriter, speed);
+            } else {
+                typing = false;
+                setTimeout(typeWriter, delay);
+            }
+        } else {
+            if (index > 0) {
+                element.textContent = text.substring(0, index - 1);
+                index--;
+                setTimeout(typeWriter, speed / 2);
+            } else {
+                typing = true;
+                setTimeout(typeWriter, delay);
+            }
+        }
+    }
+
+    window.onload = typeWriter;
+</script>
 </html>
