@@ -1,0 +1,46 @@
+/* ===== HEADER ===== */
+header {
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--HEADER);
+    box-shadow: 0 8px 10px;
+}
+
+.jasbeer {
+    margin: 0.5rem 1rem;
+    font-size: 2rem;
+    color: var(--TEXT);
+}
+
+.Main-navigation ul {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 3rem;
+    margin: 1rem 1.5rem;
+}
+
+.Main-navigation a {
+    color: var(--ANCHOR);
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+.Main-navigation a:hover {
+    color: var(--ORANGE);
+}
+
+.Main-navigation a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 0%;
+    height: 2px;
+    background: var(--ORANGE);
+    transition: width 0.3s ease;
+}
+
+.Main-navigation a:hover::after {
+    width: 100%;
+    height: 3px;
+}

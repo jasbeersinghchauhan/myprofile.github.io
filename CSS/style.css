@@ -1,0 +1,16 @@
+header {
+    height: 3rem;
+    background-color: var(--HEADER);
+    display: flex;
+    justify-content: space-between;
+    box-shadow: 0 8px 10px;
+}
+
+header ul {
+    display: flex;
+    gap: 3rem;
+}
+.az {
+    width: 20px;
+    height: auto;
+}
