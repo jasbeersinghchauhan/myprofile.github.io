@@ -1,36 +1,291 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="CSS/aboutMePage.css">
-    <link rel="stylesheet" href="CSS/common.css">
-    <link rel="stylesheet" href="CSS/header.css">
-    <title>Portfolio</title>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About | Jasbeer</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <canvas
+      id="network-canvas"
+      style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        opacity: 0.6;
+      "
+    ></canvas>
     <header>
-        <h2 class="jasbeer"><span>J</span>asbeer</h2>
-        <nav class="Main-navigation">
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="aboutMePage.html">About me</a></li>
-                <li><a href="projectPage.html">Works</a></li>
-                <li><a href="https://drive.google.com/file/d/19cXEhlN7FX0_2SlxRySGwXXA1sT1ir-6/view?usp=drivesdk">Resume</a></li>
-                <li><a href="contactPage.html">Contact</a></li>
-            </ul>
+      <div class="container nav-wrapper">
+        <a href="index.html" class="brand">JA_CHAUHAN</a>
+        <nav>
+          <ul>
+            <li><a href="index.html">/home</a></li>
+            <li><a href="projectPage.html">/projects</a></li>
+            <li><a href="aboutMePage.html" class="active">/about</a></li>
+            <li><a href="contactPage.html">/contact</a></li>
+          </ul>
         </nav>
+      </div>
     </header>
-    <main>
-        <h2>About Me</h2>
-        <section class="para">
-            <img src="src/portrait.jpg" alt="Portrait of Jasbeer Singh Chauhan">
-            <p>Hello! I’m Jasbeer Singh Chauhan, a Computer Science and Engineering (CSE) student at Graphic Era Hill University (GEHU), Dehradun, Uttarakhand.
-I’m passionate about software development and constantly driven to learn and grow in the tech field. My programming foundation includes C, C++, and Java, along with front-end skills in HTML and CSS. I’m also actively learning MySQL and backend integration techniques to build more complete and robust systems.
-One of my key academic projects is the Advanced Library Management System (ALMS)—a full-featured application developed using C++, MySQL, and WinUI 3. This project demonstrates my ability to design modular systems and implement real-world functionality like book management, account handling, borrowed book tracking, and custom algorithms for sorting and searching. It also reflects my commitment to clean code, structured database interaction, and preparing my logic for UI integration with modern frameworks.
-My academic background includes solid exposure to algorithms and data structures, particularly through my studies in Design and Analysis of Algorithms (DAA), where I’ve explored topics such as dynamic programming and graph theory.
-Beyond academics, coding is more than a subject—it's my hobby and creative outlet. I’m always looking to explore new technologies, tools, and frameworks, and I genuinely enjoy solving problems and turning ideas into practical applications.</p>
-            </section>
+
+    <main class="container">
+      <section class="hero-split" style="align-items: flex-start">
+        <div style="flex: 0 0 280px; width: 100%">
+          <div
+            class="card"
+            style="
+              padding: 1.5rem;
+              text-align: center;
+              transform: none !important;
+              transition: border-color 0.3s ease;
+            "
+          >
+            <img
+              src="src/portrait.jpg"
+              alt="Jasbeer Singh Chauhan"
+              style="
+                width: 100%;
+                height: auto;
+                border-radius: 4px;
+                border: 1px solid var(--border-dim);
+                margin-bottom: 1rem;
+                object-fit: cover;
+              "
+            />
+
+            <h2
+              style="
+                font-size: 1.25rem;
+                color: var(--text-header);
+                margin-bottom: 0.5rem;
+              "
+            >
+              Jasbeer S. Chauhan
+            </h2>
+            <span class="tagline">Backend Engineer</span>
+
+            <div
+              style="
+                margin-top: 1.5rem;
+                text-align: left;
+                font-size: 0.85rem;
+                border-top: 1px solid var(--border-dim);
+                padding-top: 1.5rem;
+              "
+            >
+              <div style="margin-bottom: 12px">
+                <span class="text-muted">Education:</span><br />
+                <span class="text-header">B.Tech CSE (3rd Year)</span>
+              </div>
+              <div style="margin-bottom: 12px">
+                <span class="text-muted">Institute:</span><br />
+                <span class="text-header">Graphic Era Hill Univ.</span>
+              </div>
+              <div>
+                <span class="text-muted">Location:</span><br />
+                <span class="text-header">Dehradun, India</span>
+              </div>
+            </div>
+
+            <a
+              href="https://drive.google.com/file/d/19UCPv7D9T3Xxx-QWEG0Esna5o_Z2GK9d/view?usp=sharing"
+              target="_blank"
+              class="btn-primary"
+              style="width: 100%; margin-top: 1.5rem; text-align: center"
+            >
+              Download Resume
+            </a>
+
+            <div class="social-container">
+              <a
+                href="https://github.com/jasbeersinghchauhan"
+                target="_blank"
+                title="GitHub"
+                class="social-link"
+              >
+                <img src="src/github.svg" alt="Github Logo" />
+              </a>
+              <a
+                href="https://linkedin.com/in/jasbeer-singh-chauhan"
+                target="_blank"
+                title="LinkedIn"
+                class="social-link"
+              >
+                <img src="src/linkedin.svg" alt="Linkedin Logo" />
+              </a>
+              <a
+                href="https://leetcode.com/u/Jasbeer_Singh_Chauhan/"
+                target="_blank"
+                title="LeetCode"
+                class="social-link text-muted"
+              >
+                LC
+              </a>
+              <a
+                href="mailto:jasbeersinghchauhan230@gmail.com"
+                title="Email"
+                class="social-link"
+              >
+                <img src="src/gmail.svg" alt="Gmail Logo" />
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-right">
+          <div class="card" style="transform: none !important; padding: 2rem">
+            <h3 class="card-title text-accent" style="margin-bottom: 1.5rem">
+              ## System_Identity
+            </h3>
+
+            <div
+              style="font-size: 1rem; line-height: 1.8; margin-bottom: 2.5rem"
+            >
+              <p class="text-muted" style="margin-bottom: 1.2rem">
+                I specialize in the bridge between
+                <strong class="text-header">low-level performance</strong> and
+                <strong class="text-header">scalable web architecture</strong>.
+                While many focus on pixels, I focus on the high-concurrency
+                logic and data integrity that keep modern systems operational.
+              </p>
+              <p class="text-muted" style="margin-bottom: 1.2rem">
+                My journey began with a deep dive into
+                <span class="text-blue">C++ and Socket Programming</span>, where
+                I learned to appreciate the nuances of memory management and
+                multi-threaded synchronization. I am now leveraging that
+                systems-level mindset to architect robust Node.js backends.
+              </p>
+              <p class="text-muted">
+                Currently, I am a 3rd-year student at Graphic Era Hill
+                University, building high-performance services like my
+                <span class="text-header">Multithreaded Proxy Server</span>. My
+                goal is to build backend systems that are secure, distributed,
+                and capable of handling thousands of simultaneous connections
+                without failure.
+              </p>
+            </div>
+
+            <div
+              style="
+                border-top: 1px dashed var(--border-dim);
+                padding-top: 2rem;
+              "
+            >
+              <h4
+                style="
+                  color: var(--text-header);
+                  margin-bottom: 1.5rem;
+                  font-size: 1.1rem;
+                "
+              >
+                Technical Arsenal
+              </h4>
+
+              <div style="margin-bottom: 2rem">
+                <span
+                  style="
+                    font-size: 0.8rem;
+                    color: var(--text-muted);
+                    display: block;
+                    margin-bottom: 0.8rem;
+                    letter-spacing: 1px;
+                  "
+                  >CORE SYSTEMS & CONCURRENCY</span
+                >
+                <div class="stack-list" style="padding: 0">
+                  <span
+                    class="badge"
+                    style="
+                      border: 1px solid var(--accent-primary);
+                      color: var(--accent-primary);
+                      background: transparent;
+                      padding: 4px 12px;
+                    "
+                    >C++20 (STL)</span
+                  >
+                  <span
+                    class="badge"
+                    style="
+                      border: 1px solid var(--accent-primary);
+                      color: var(--accent-primary);
+                      background: transparent;
+                      padding: 4px 12px;
+                    "
+                    >Multi-threading</span
+                  >
+                  <span
+                    class="badge"
+                    style="
+                      border: 1px solid var(--accent-primary);
+                      color: var(--accent-primary);
+                      background: transparent;
+                      padding: 4px 12px;
+                    "
+                    >Socket Programming</span
+                  >
+                  <span
+                    class="badge"
+                    style="
+                      border: 1px solid var(--accent-primary);
+                      color: var(--accent-primary);
+                      background: transparent;
+                      padding: 4px 12px;
+                    "
+                    >DSA & Optimization</span
+                  >
+                </div>
+              </div>
+
+              <div>
+                <span
+                  style="
+                    font-size: 0.8rem;
+                    color: var(--text-muted);
+                    display: block;
+                    margin-bottom: 0.8rem;
+                    letter-spacing: 1px;
+                  "
+                  >BACKEND INFRASTRUCTURE</span
+                >
+                <div class="stack-list" style="padding: 0">
+                  <span class="badge" style="padding: 4px 12px">Node.js</span>
+                  <span class="badge" style="padding: 4px 12px">Express</span>
+                  <span class="badge" style="padding: 4px 12px"
+                    >Redis (Pub/Sub)</span
+                  >
+                  <span class="badge" style="padding: 4px 12px">MongoDB</span>
+                  <span class="badge" style="padding: 4px 12px">MySQL</span>
+                  <span class="badge" style="padding: 4px 12px"
+                    >Git / GitHub</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
-</body>
+
+    <footer class="sys-footer">
+      <div class="container status-bar">
+        <div class="status-item">
+          <div class="status-dot"></div>
+          <span>System Status: ONLINE</span>
+        </div>
+        <span>© 2025 Jasbeer Singh Chauhan</span>
+      </div>
+    </footer>
+    <nav class="mobile-nav">
+      <a href="index.html" title="Home">H</a>
+      <a href="projectPage.html" title="Projects">P</a>
+      <a href="aboutMePage.html" title="About">A</a>
+      <a href="contactPage.html" title="Contact">C</a>
+    </nav>
+    <script src="script.js"></script>
+  </body>
 </html>

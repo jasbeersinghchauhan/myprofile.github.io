@@ -1,24 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="CSS/header.css">
-    <link rel="stylesheet" href="CSS/common.css">
-    <title>Portfolio</title>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Projects | Jasbeer</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <canvas
+      id="network-canvas"
+      style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        opacity: 0.6;
+      "
+    ></canvas>
     <header>
-        <h2 class="jasbeer"><span>J</span>asbeer</h2>
-        <nav class="Main-navigation">
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="aboutMePage.html">About me</a></li>
-                <li><a href="projectPage.html">Works</a></li>
-                <li><a href="https://drive.google.com/file/d/19cXEhlN7FX0_2SlxRySGwXXA1sT1ir-6/view?usp=drivesdk">Resume</a></li>
-                <li><a href="contactPage.html">Contact</a></li>
-            </ul>
+      <div class="container nav-wrapper">
+        <a href="index.html" class="brand">JA_CHAUHAN</a>
+        <nav>
+          <ul>
+            <li><a href="index.html">/home</a></li>
+            <li><a href="projectPage.html" class="active">/projects</a></li>
+            <li><a href="aboutMePage.html">/about</a></li>
+            <li><a href="contactPage.html">/contact</a></li>
+          </ul>
         </nav>
+      </div>
     </header>
-</body>
+
+    <main class="container">
+      <div style="margin-bottom: 2rem">
+        <h2 class="text-header">Selected Repositories</h2>
+        <p class="text-muted">
+          Focusing on system performance, concurrency, and data integrity.
+        </p>
+      </div>
+
+      <div class="grid-cols project-grid"></div>
+    </main>
+
+    <div
+      id="code-modal"
+      class="cmd-overlay"
+      style="display: none; align-items: center"
+    >
+      <div
+        class="cmd-box"
+        style="
+          max-width: 800px;
+          height: 500px;
+          display: flex;
+          flex-direction: column;
+        "
+      >
+        <div
+          class="cmd-header"
+          style="background: #1e1e1e; border-bottom: 1px solid #333"
+        >
+          <div class="flex-center" style="gap: 10px">
+            <span class="text-accent">●</span>
+            <span id="modal-title" style="color: #fff">server.cpp</span>
+          </div>
+          <button id="close-modal" class="text-muted">
+            [ CLOSE_CONNECTION ]
+          </button>
+        </div>
+        <pre
+          style="
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1.5rem;
+            overflow: auto;
+            flex: 1;
+            margin: 0;
+            font-size: 0.85rem;
+          "
+          id="modal-code"
+        ></pre>
+      </div>
+    </div>
+
+    <footer class="sys-footer">
+      <div class="container status-bar">
+        <div class="status-item">
+          <div class="status-dot"></div>
+          <span>System Status: ONLINE</span>
+        </div>
+        <span>© 2025 Jasbeer Singh Chauhan</span>
+      </div>
+    </footer>
+    <nav class="mobile-nav">
+      <a href="index.html" title="Home">H</a>
+      <a href="projectPage.html" title="Projects">P</a>
+      <a href="aboutMePage.html" title="About">A</a>
+      <a href="contactPage.html" title="Contact">C</a>
+    </nav>
+    <script src="script.js" defer></script>
+  </body>
 </html>
