@@ -1,347 +1,562 @@
-/* =========================================
-   SYSTEM CORE LOGIC (script.js)
-   ========================================= */
+(function () {
+  "use strict";
 
-document.addEventListener("DOMContentLoaded", () => {
-  initTerminal();
-  initCommandPalette();
-  initCopyLogic();
-  renderProjects();
-  initNetworkBackground();
-  initSystemClock();
-});
+  /* ---------- CONFIG & STATE ---------- */
+  const STATE = {
+    startTime: getSystemStartTime(),
+  };
 
-/* --- 1. INTERACTIVE TERMINAL (Home Page) --- */
-function initTerminal() {
-  const termBody = document.querySelector(".terminal-body");
-  if (!termBody) return;
-
-  const logs = [
-    { time: "00:00:01", type: "SYS", msg: "Initializing Kernel Modules..." },
-    { time: "00:00:02", type: "NET", msg: "Mapping Network Topology [Ready]" },
-    {
-      time: "00:00:03",
-      type: "AUTH",
-      msg: "Identity Verified: Jasbeer S. Chauhan",
+  const CONFIG = {
+    bootLogs: [
+      ["SYS", "Initializing Kernel Modules..."],
+      ["NET", "Mapping Network Topology"],
+      ["AUTH", "Identity Verified"],
+      ["SEC", "Applying Security Policies"],
+      ["DB", "Cache Layer Connected"],
+      ["SUCCESS", "System Online"],
+    ],
+    projects: [
+      {
+        title: "Secure Real-Time Messaging API",
+        status: "Deployment Ready",
+        link: "#",
+        desc: "Distributed WebSocket architecture with End-to-End Encryption (E2EE).",
+        stack: ["Node.js", "Redis Pub/Sub", "JWT"],
+        hasCode: true,
+      },
+      {
+        title: "Multithreaded Web Proxy",
+        status: "Refactored v2",
+        link: "https://github.com/jasbeersinghchauhan/Proxy_Web_Server.git",
+        desc: "Originally built in C (WinAPI/Winsock), remade in C++20 using RAII, Smart Pointers, and std::thread. Features O(1) LRU Caching and Semaphore throttling.",
+        stack: ["C++20 (RAII)", "Winsock2", "Smart Pointers"],
+        hasCode: true,
+      },
+      {
+        title: "Library Management System",
+        status: "v1.0.0",
+        link: "#",
+        desc: "ACID-compliant backend system with transactional integrity.",
+        stack: ["C++", "MySQL", "System Design"],
+        hasCode: false,
+      },
+    ],
+    codeSnippets: {
+      "Multithreaded Web Proxy":
+        "// EVOLUTION SUMMARY\n" +
+        "// v1 (Legacy C): Manual memory management, raw WinAPI threads.\n" +
+        "// v2 (Current C++): Refactored for safety and modern standards.\n\n" +
+        "// ARCHITECTURE\n" +
+        "// 1. Concurrency: Thread-per-client model using std::thread.\n" +
+        "// 2. Synchronization: std::counting_semaphore for connection throttling.\n" +
+        "// 3. Caching: Custom Thread-Safe LRU Cache (HashMap + Doubly Linked List).\n" +
+        "// 4. RAII: Unique_ptrs allow automatic resource cleanup (Sockets/Handles).",
+      "Secure Real-Time Messaging API":
+        "// ARCHITECTURE SUMMARY\n" +
+        "// 1. Scaling: Redis Adapter for horizontal scaling across nodes.\n" +
+        "// 2. Auth: JWT handshake verification during WebSocket upgrade.\n" +
+        "// 3. Security: Payloads encrypted before transmission.",
     },
-    {
-      time: "00:00:04",
-      type: "SEC",
-      msg: "Applying WebSocket JWT Middleware...",
-    },
-    {
-      time: "00:00:05",
-      type: "DB",
-      msg: "Redis Cluster Connected on Port 6379",
-    },
-    {
-      time: "00:00:06",
-      type: "SUCCESS",
-      msg: "Gateway Online. Port 443 Listening.",
-    },
-  ];
+  };
 
-  let delay = 0;
-  logs.forEach((log) => {
-    setTimeout(() => {
-      const row = document.createElement("div");
-      row.className = "log-line";
-      row.style.borderLeft =
-        log.type === "SUCCESS"
-          ? "2px solid var(--accent-secondary)"
-          : "2px solid transparent";
-      row.style.paddingLeft = "8px";
+  /* ---------- SAFE HELPERS ---------- */
 
-      row.innerHTML = `
-                <span class="log-time" style="opacity:0.5">${log.time}</span>
-                <span style="color:var(--accent-info); font-weight:bold; margin-right:8px;">[${log.type}]</span>
-                <span>${log.msg}</span>
-            `;
-      termBody.appendChild(row);
-      termBody.scrollTop = termBody.scrollHeight;
-    }, delay);
-    delay += 600;
+  const qs = (sel, parent = document) => parent.querySelector(sel);
+  const qsa = (sel, parent = document) => [...parent.querySelectorAll(sel)];
+
+  const createElement = (tag, className, text = "") => {
+    const el = document.createElement(tag);
+    if (className) el.className = className;
+    if (text) el.textContent = text;
+    return el;
+  };
+
+  function nowUTC() {
+    return new Date().toISOString().slice(11, 19);
+  }
+
+  function getSystemStartTime() {
+    const stored = sessionStorage.getItem("sys_start_time");
+    if (stored) return Number(stored);
+    const now = Date.now();
+    sessionStorage.setItem("sys_start_time", String(now));
+    return now;
+  }
+
+  function pad(n) {
+    return String(Math.floor(n)).padStart(2, "0");
+  }
+
+  /* ---------- INIT ---------- */
+
+  const init = () => {
+    initTerminal();
+    initCommandPalette();
+    initCopyLogic();
+    renderProjects();
+    initNetworkBackground();
+    initSystemClock();
+    initModalLogic();
+  };
+
+  if (document.readyState !== "loading") init();
+  else document.addEventListener("DOMContentLoaded", init);
+
+  /* ---------- TERMINAL ---------- */
+
+  // Add history state
+  Object.assign(STATE, {
+    cmdHistory: [],
+    historyIndex: -1,
   });
-}
 
-/* --- 2. COMMAND PALETTE (Ctrl + K) --- */
-function initCommandPalette() {
-  const modalHtml = `
-    <div id="cmd-palette" class="cmd-overlay" style="display:none;">
+  const FILE_SYSTEM = {
+    "about.txt":
+      "I am a 3rd-year CSE student specializing in Backend Engineering (Node.js/C++).",
+    "skills.json": '["Node.js", "C++", "Redis", "MongoDB", "System Design"]',
+    "contact.txt":
+      "Email: jasbeersinghchauhan377@gmail.com\nGitHub: github.com/jasbeersinghchauhan",
+    "secret.log": "ACCESS DENIED. Level 5 clearance required.",
+  };
+
+  function initTerminal() {
+    const body = qs(".terminal-body");
+    if (!body) return;
+
+    let i = 0;
+
+    // Helper to print lines
+    const pushLog = (type, msg, className = "") => {
+      const row = createElement("div", `log-line ${className}`);
+
+      // Formatting based on type
+      if (type === "CMD") {
+        const prompt = createElement("span", "log-prompt", "visitor@root:~$ ");
+        const cmdText = createElement("span", "log-cmd", msg);
+        row.append(prompt, cmdText);
+      } else {
+        // Timestamp only for non-command logs
+        if (type !== "OUTPUT") {
+          const timeSpan = createElement("span", "log-time", nowUTC());
+          row.appendChild(timeSpan);
+        }
+
+        // Optional type tag
+        if (type && type !== "OUTPUT") {
+          const typeSpan = createElement("span", "log-type", `[${type}]`);
+          row.appendChild(typeSpan);
+        }
+
+        const msgSpan = createElement("span", "log-msg", msg);
+        // Allow HTML for links/colors in OUTPUT
+        if (type === "OUTPUT") msgSpan.innerHTML = msg;
+        row.appendChild(msgSpan);
+      }
+
+      body.appendChild(row);
+      body.scrollTop = body.scrollHeight;
+    };
+
+    // 1. BOOT SEQUENCE
+    const bootNext = () => {
+      if (i >= CONFIG.bootLogs.length) {
+        pushLog("SYS", "Shell initialization complete...");
+        enableInteractiveShell(body, pushLog);
+        return;
+      }
+      pushLog(CONFIG.bootLogs[i][0], CONFIG.bootLogs[i][1]);
+      i++;
+      setTimeout(bootNext, 400);
+    };
+
+    bootNext();
+  }
+
+  function enableInteractiveShell(terminalBody, printFn) {
+    const inputRow = createElement("div", "input-line");
+
+    inputRow.className = "input-line flex-center-start";
+
+    const prompt = createElement("span", "prompt", "visitor@root:~$ ");
+    prompt.className = "prompt-text";
+
+    const input = createElement("input", "cmd-input");
+    input.type = "text";
+    input.autocomplete = "off";
+
+    inputRow.append(prompt, input);
+    terminalBody.appendChild(inputRow);
+
+    // Focus handling
+    terminalBody.addEventListener("click", () => input.focus());
+    input.focus();
+
+    // Command Logic
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const cmd = input.value.trim();
+        input.value = "";
+
+        inputRow.remove();
+        printFn("CMD", cmd);
+
+        if (cmd) {
+          STATE.cmdHistory.push(cmd);
+          STATE.historyIndex = STATE.cmdHistory.length;
+          processCommand(cmd, printFn);
+        }
+
+        terminalBody.appendChild(inputRow);
+        input.focus();
+        terminalBody.scrollTop = terminalBody.scrollHeight;
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        if (STATE.historyIndex > 0) {
+          STATE.historyIndex--;
+          input.value = STATE.cmdHistory[STATE.historyIndex];
+        }
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        if (STATE.historyIndex < STATE.cmdHistory.length - 1) {
+          STATE.historyIndex++;
+          input.value = STATE.cmdHistory[STATE.historyIndex];
+        } else {
+          STATE.historyIndex = STATE.cmdHistory.length;
+          input.value = "";
+        }
+      } else if (e.key === "Tab") {
+        e.preventDefault();
+        const validCmds = ["help", "ls", "clear", "about", "projects", "cat"];
+        const current = input.value;
+        const match = validCmds.find((c) => c.startsWith(current));
+        if (match) input.value = match;
+      }
+    });
+  }
+
+  function processCommand(rawCmd, print) {
+    const args = rawCmd.split(" ");
+    const cmd = args[0].toLowerCase();
+
+    switch (cmd) {
+      case "help":
+        print("OUTPUT", "Available commands:");
+        print(
+          "OUTPUT",
+          "&nbsp;&nbsp;ls&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- List directory contents"
+        );
+        print("OUTPUT", "&nbsp;&nbsp;cat [file] - Display file content");
+        print(
+          "OUTPUT",
+          "&nbsp;&nbsp;clear&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Clear terminal screen"
+        );
+        print(
+          "OUTPUT",
+          "&nbsp;&nbsp;whoami&nbsp;&nbsp;&nbsp;&nbsp;- Current user session"
+        );
+        print("OUTPUT", "&nbsp;&nbsp;projects&nbsp;&nbsp;- View project stack");
+        break;
+
+      case "ls":
+      case "dir":
+        const files = Object.keys(FILE_SYSTEM)
+          .map((f) => `<span style="color: #F28C28;">${f}</span>`)
+          .join("&nbsp;&nbsp;");
+        print("OUTPUT", files);
+        break;
+
+      case "cat":
+        if (!args[1]) {
+          print("OUTPUT", "Usage: cat [filename]");
+        } else if (FILE_SYSTEM[args[1]]) {
+          print("OUTPUT", FILE_SYSTEM[args[1]]);
+        } else {
+          print("OUTPUT", `cat: ${args[1]}: No such file or directory`);
+        }
+        break;
+
+      case "clear":
+      case "cls":
+        const body = qs(".terminal-body");
+        qsa(".log-line", body).forEach((el) => el.remove());
+        break;
+
+      case "whoami":
+        print("OUTPUT", "visitor@graphic-era-hill-university");
+        break;
+
+      case "projects":
+        print("OUTPUT", "Redirecting to /projects...");
+        setTimeout(() => (window.location.href = "projectPage.html"), 800);
+        break;
+
+      case "sudo":
+        print(
+          "OUTPUT",
+          "user is not in the sudoers file. This incident will be reported."
+        );
+        break;
+
+      default:
+        print(
+          "OUTPUT",
+          `Command not found: ${cmd}. Type 'help' for available commands.`
+        );
+    }
+  }
+
+  /* ---------- COMMAND PALETTE ---------- */
+
+  function initCommandPalette() {
+    if (qs("#cmd-palette")) return;
+
+    document.body.insertAdjacentHTML(
+      "beforeend",
+      `
+      <div id="cmd-palette" class="cmd-overlay hidden">
         <div class="cmd-box">
-            <div class="cmd-header">
-                <span class="text-muted">>_ System Navigation</span>
-                <span class="badge">ESC to close</span>
-            </div>
-            <input type="text" id="cmd-search" placeholder="Type a destination...">
-            <div class="cmd-list">
-                <a href="index.html" class="cmd-item"><span>/home</span><span class="text-muted">Return to base</span></a>
-                <a href="https://github.com/jasbeersinghchauhan" target="_blank" class="cmd-item"><span>/github</span><span class="text-muted">Source Repositories</span></a>
-                <a href="https://linkedin.com/in/jasbeer-singh-chauhan" target="_blank" class="cmd-item"><span>/linkedin</span><span class="text-muted">Professional Network</span></a>
-                <a href="https://leetcode.com/u/jasbeersinghchauhan/" target="_blank" class="cmd-item"><span>/leetcode</span><span class="text-muted">Algorithm Stats</span></a>
-                <a href="contactPage.html" class="cmd-item"><span>/contact</span><span class="text-muted">Send Handshake</span></a>
-            </div>
+          <div class="cmd-header">
+            <span class="text-muted">>_ Navigation</span>
+            <span class="badge">ESC</span>
+          </div>
+          <input id="cmd-search" placeholder="Type a command..." />
+          <div class="cmd-list">
+            <div class="cmd-item" data-cmd="/help"><span>/help</span><span class="text-muted">Commands</span></div>
+            <a href="index.html" class="cmd-item"><span>/home</span></a>
+            <a href="projectPage.html" class="cmd-item"><span>/projects</span></a>
+            <a href="contactPage.html" class="cmd-item"><span>/contact</span></a>
+            <a href="https://github.com/jasbeersinghchauhan" target="_blank" class="cmd-item"><span>/github</span></a>
+            <a href="https://linkedin.com/in/jasbeer-singh-chauhan" target="_blank" class="cmd-item"><span>/linkedin</span></a>
+          </div>
         </div>
-    </div>
-`;
-  document.body.insertAdjacentHTML("beforeend", modalHtml);
+      </div>`
+    );
 
-  const overlay = document.getElementById("cmd-palette");
-  const input = document.getElementById("cmd-search");
+    const overlay = qs("#cmd-palette");
+    const input = qs("#cmd-search");
+    const items = qsa(".cmd-item");
 
-  document.addEventListener("keydown", (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === "k") {
-      e.preventDefault();
-      overlay.style.display = "flex";
-      input.focus();
-    }
-    if (e.key === "Escape") overlay.style.display = "none";
-  });
-
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) overlay.style.display = "none";
-  });
-}
-
-/* --- 3. DYNAMIC PROJECTS --- */
-function renderProjects() {
-  const grid = document.querySelector(".project-grid");
-  if (!grid) return;
-  grid.innerHTML = "";
-
-  const projects = [
-    {
-      title: "Secure Real-Time Messaging API",
-      status: "Deployment Ready",
-      link: "#",
-      desc: "Scalable WebSocket architecture solving the C10k problem. Features E2EE and distributed state management.",
-      note: "Horizontal scaling achieved via Redis Pub/Sub integration.",
-      stack: ["Node.js", "Socket.io", "Redis", "JWT"],
-      hasCode: true,
-    },
-    {
-      title: "Multithreaded Proxy Server",
-      status: "Completed",
-      link: "https://github.com/jasbeersinghchauhan/Proxy_Web_Server.git",
-      desc: "High-performance proxy with LRU Cache. Migrated from C (WinAPI) to Modern C++20.",
-      note: "Reduced latency by 40% via LRU Cache implementation.",
-      stack: ["C++20", "Winsock2", "Semaphores"],
-      hasCode: true,
-    },
-    {
-      title: "Library Management System",
-      status: "v1.0.0",
-      link: "#",
-      desc: "Backend asset management handling complex SQL relationships and ACID compliance.",
-      stack: ["C++", "MySQL", "OOP"],
-      hasCode: false,
-    },
-  ];
-
-  projects.forEach((p) => {
-    const inspectBtn = p.hasCode
-      ? `<button onclick="openCodeModal('${p.title}')" class="repo-link" style="cursor:pointer; background:transparent; border:1px solid var(--accent-info); color:var(--accent-info);">
-                 <span>{} Inspect Logic</span>
-               </button>`
-      : "";
-
-    const card = `
-            <article class="card">
-                <div class="card-header">
-                    <div>
-                        <h3 class="card-title">${p.title}</h3>
-                        <span class="text-accent" style="font-size: 0.8rem;">${p.status
-      }</span>
-                    </div>
-                    <div style="display:flex; gap:10px;">
-                        ${inspectBtn}
-                        <a href="${p.link
-      }" class="repo-link"><span>Source ↗</span></a>
-                    </div>
-                </div>
-                <p class="text-muted" style="font-size: 0.9rem; margin-bottom: 1rem;">${p.desc
-      }</p>
-                ${p.note
-        ? `<div style="background:rgba(0,0,0,0.3); padding:0.8rem; border-left:2px solid var(--accent-secondary); margin-bottom:1rem; font-size:0.8rem;">${p.note}</div>`
-        : ""
+    document.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+        e.preventDefault();
+        overlay.classList.remove("hidden");
+        input?.focus();
       }
-                <div class="stack-list">
-                    ${p.stack
+      if (e.key === "Escape") overlay.classList.add("hidden");
+    });
+
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) overlay.classList.add("hidden");
+    });
+
+    items.forEach((item) => {
+      item.addEventListener("click", () => {
+        if (item.dataset.cmd === "/help") {
+          alert("/home\n/projects\n/contact\n/github\n/linkedin\n\nCtrl + K");
+        }
+      });
+    });
+  }
+
+  /* ---------- PROJECTS & MODAL LOGIC ---------- */
+
+  function renderProjects() {
+    const grid = qs(".project-grid");
+    if (!grid) return;
+
+    grid.replaceChildren();
+
+    CONFIG.projects.forEach((p) => {
+      const inspectBtnHtml = p.hasCode
+        ? `<button class="repo-link" data-action="inspect" data-title="${p.title}">Inspect Logic</button>`
+        : "";
+
+      const stackHtml = p.stack
         .map((s) => `<span class="badge">${s}</span>`)
-        .join("")}
-                </div>
-            </article>
-        `;
-    grid.innerHTML += card;
-  });
-}
+        .join("");
 
-/* --- 4. CONTACT COPY LOGIC --- */
-function initCopyLogic() {
-  const btn = document.getElementById("copyBtn");
-  if (!btn) return;
+      const cardHTML = `
+        <div class="card-header">
+          <h3>${p.title}</h3>
+          <span class="badge">${p.status}</span>
+        </div>
+        <p class="text-muted" style="margin-bottom: 1rem;">${p.desc}</p>
+        <div class="card-footer">
+            <div class="card-actions" style="display: flex; gap: 10px;">
+              ${inspectBtnHtml}
+              <a href="${p.link}" class="repo-link" target="_blank">Source Code ↗</a>
+            </div>
+            <div class="stack-list">${stackHtml}</div>
+        </div>
+      `;
 
-  btn.addEventListener("click", () => {
-    navigator.clipboard.writeText("jasbeersinghchauhan377@gmail.com");
-    const originalText = btn.innerText;
-    btn.innerText = "✓ Copied to Clipboard";
-    btn.style.color = "var(--accent-primary)";
-    setTimeout(() => {
-      btn.innerText = originalText;
-      btn.style.color = "var(--text-muted)";
-    }, 2000);
-  });
-}
-
-/* --- 5. NETWORK TOPOLOGY BACKGROUND --- */
-function initNetworkBackground() {
-  const canvas = document.getElementById("network-canvas");
-  if (!canvas) return;
-  const ctx = canvas.getContext("2d");
-  let width,
-    height,
-    particles = [];
-  const config = {
-    particleColor: "rgba(88, 166, 255, 0.5)",
-    lineColor: "rgba(88, 166, 255, 0.15)",
-    particleAmount: 60,
-    defaultSpeed: 0.5,
-    linkRadius: 150,
-  };
-
-  const resize = () => {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-  };
-  class Particle {
-    constructor() {
-      this.x = Math.random() * width;
-      this.y = Math.random() * height;
-      this.vx = (Math.random() - 0.5) * config.defaultSpeed;
-      this.vy = (Math.random() - 0.5) * config.defaultSpeed;
-      this.size = Math.random() * 2 + 1;
-    }
-    update() {
-      this.x += this.vx;
-      this.y += this.vy;
-      if (this.x < 0 || this.x > width) this.vx *= -1;
-      if (this.y < 0 || this.y > height) this.vy *= -1;
-    }
-    draw() {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fillStyle = config.particleColor;
-      ctx.fill();
-    }
-  }
-  function loop() {
-    ctx.clearRect(0, 0, width, height);
-    particles.forEach((p) => {
-      p.update();
-      p.draw();
+      const article = createElement("article", "card");
+      article.innerHTML = cardHTML;
+      grid.appendChild(article);
     });
-    linkParticles();
-    requestAnimationFrame(loop);
   }
-  function linkParticles() {
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < config.linkRadius) {
-          ctx.beginPath();
-          ctx.strokeStyle = config.lineColor;
-          ctx.lineWidth = 1;
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.stroke();
-        }
+
+  function initModalLogic() {
+    const modal = qs("#code-modal");
+    const grid = qs(".project-grid"); // We use delegation on the grid
+    const titleEl = qs("#modal-title");
+    const codeEl = qs("#modal-code");
+
+    if (!modal || !grid) return;
+
+    // Delegation: Listen for clicks on the grid, detect inspect buttons
+    grid.addEventListener("click", (e) => {
+      const btn = e.target.closest('button[data-action="inspect"]');
+      if (!btn) return;
+
+      const title = btn.dataset.title;
+      const snippet = CONFIG.codeSnippets[title] || "Source unavailable";
+
+      titleEl.textContent = title.replace(/ /g, "_").toLowerCase() + ".cpp";
+      codeEl.textContent = snippet;
+      modal.style.display = "flex";
+    });
+
+    // Close Modal Logic
+    document.addEventListener("click", (e) => {
+      if (e.target.id === "code-modal" || e.target.id === "close-modal") {
+        modal.style.display = "none";
+      }
+    });
+  }
+
+  /* ---------- COPY ---------- */
+
+  function initCopyLogic() {
+    const btn = qs("#copyBtn");
+    if (!btn || !navigator.clipboard) return;
+
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText("jasbeersinghchauhan377@gmail.com");
+        const originalText = btn.textContent;
+        btn.textContent = "✓ Copied";
+        setTimeout(() => {
+          btn.textContent = originalText;
+        }, 1500);
+      } catch (err) {
+        console.error("Failed to copy", err);
+      }
+    });
+  }
+
+  /* ---------- BACKGROUND ---------- */
+
+  function initNetworkBackground() {
+    const canvas = document.getElementById("network-canvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+
+    let width, height;
+    let particles = [];
+
+    const config = {
+      particleColor: "rgba(88, 166, 255, 0.7)",
+      lineColor: "rgba(88, 166, 255, 0.15)", // Base opacity for calculation
+      particleAmount: 60,
+      defaultSpeed: 0.8,
+      linkRadius: 160,
+    };
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.vx = (Math.random() - 0.5) * config.defaultSpeed;
+        this.vy = (Math.random() - 0.5) * config.defaultSpeed;
+        this.size = 2;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        // Bounce off edges
+        if (this.x < 0 || this.x > width) this.vx *= -1;
+        if (this.y < 0 || this.y > height) this.vy *= -1;
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = config.particleColor;
+        ctx.fill();
       }
     }
-  }
-  window.addEventListener("resize", resize);
-  resize();
-  for (let i = 0; i < config.particleAmount; i++)
-    particles.push(new Particle());
-  loop();
-}
 
-/* --- 6. SYSTEM CLOCK & UPTIME --- */
-function initSystemClock() {
-  const timeDisplay = document.getElementById("utc-time");
-  const uptimeDisplay = document.getElementById("uptime-counter");
-  if (!timeDisplay || !uptimeDisplay) return;
+    const resize = () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    };
 
-  let start = sessionStorage.getItem("sys_start_time") || Date.now();
-  sessionStorage.setItem("sys_start_time", start);
-  start = parseInt(start, 10);
+    const linkParticles = () => {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
 
-  setInterval(() => {
-    const now = new Date();
-    timeDisplay.innerText = `UTC: ${now.toISOString().split("T")[1].split(".")[0]
-      }`;
-    const diff = Date.now() - start;
-    const h = Math.floor(diff / 3600000)
-      .toString()
-      .padStart(2, "0");
-    const m = Math.floor((diff % 3600000) / 60000)
-      .toString()
-      .padStart(2, "0");
-    const s = Math.floor((diff % 60000) / 1000)
-      .toString()
-      .padStart(2, "0");
-    uptimeDisplay.innerText = `UP: ${h}:${m}:${s}`;
-  }, 1000);
-}
-
-/* --- MODAL LOGIC & SNIPPETS --- */
-const codeSnippets = {
-  "Multithreaded Proxy Server": `// C++20 Thread Pool Implementation
-void ThreadPool::worker_thread() {
-    while (true) {
-        std::function<void()> task;
-        {
-            std::unique_lock<std::mutex> lock(queue_mutex);
-            condition.wait(lock, [this]{ return stop || !tasks.empty(); });
-            if (stop && tasks.empty()) return;
-            task = std::move(tasks.front());
-            tasks.pop();
+          if (distance < config.linkRadius) {
+            const opacity = 1 - distance / config.linkRadius;
+            ctx.strokeStyle = `rgba(88, 166, 255, ${opacity * 0.25})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
         }
-        task(); // Execute Task
-    }
-}`,
-  "Secure Real-Time Messaging API": `// Scaling WebSockets with Redis Adapter
-const { createAdapter } = require("@socket.io/redis-adapter");
-const { Redis } = require("ioredis");
+      }
+    };
 
-const pubClient = new Redis(process.env.REDIS_URL);
-const subClient = pubClient.duplicate();
+    const loop = () => {
+      ctx.clearRect(0, 0, width, height);
+      particles.forEach((p) => {
+        p.update();
+        p.draw();
+      });
+      linkParticles();
+      requestAnimationFrame(loop);
+    };
 
-io.adapter(createAdapter(pubClient, subClient));
+    const spawnParticles = () => {
+      particles = [];
+      for (let i = 0; i < config.particleAmount; i++) {
+        particles.push(new Particle());
+      }
+    };
 
-io.on("connection", (socket) => {
-    socket.on("publish_message", (payload) => {
-        // Broadcasts to specific room across all server nodes
-        socket.to(payload.roomID).emit("message", payload);
+    window.addEventListener("resize", () => {
+      resize();
+      spawnParticles();
     });
-});`,
-};
 
-function openCodeModal(title) {
-  const modal = document.getElementById("code-modal");
-  const titleEl = document.getElementById("modal-title");
-  const codeEl = document.getElementById("modal-code");
-  if (modal && titleEl && codeEl) {
-    titleEl.innerText = title + " / Core_Logic";
-    codeEl.innerText = codeSnippets[title] || "// Source unavailable.";
-    modal.style.display = "flex";
+    resize();
+    spawnParticles();
+    loop();
   }
-}
 
-// Global Close Event
-document.addEventListener("click", (e) => {
-  if (e.target.id === "close-modal" || e.target.id === "code-modal") {
-    document.getElementById("code-modal").style.display = "none";
+  /* ---------- CLOCK ---------- */
+
+  function initSystemClock() {
+    const timeEl = qs("#utc-time");
+    const uptimeEl = qs("#uptime-counter");
+    if (!timeEl || !uptimeEl) return;
+
+    setInterval(() => {
+      timeEl.textContent = `UTC: ${nowUTC()}`;
+
+      const diff = Date.now() - STATE.startTime;
+      const hours = pad(diff / 3600000);
+      const mins = pad((diff / 60000) % 60);
+      const secs = pad((diff / 1000) % 60);
+
+      uptimeEl.textContent = `UP: ${hours}:${mins}:${secs}`;
+    }, 1000);
   }
-});
+})();

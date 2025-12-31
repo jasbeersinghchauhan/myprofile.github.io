@@ -3,23 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Jasbeer | Backend Engineer</title>
+
+    <title>Jasbeer Singh Chauhan | Backend Engineer</title>
+    <meta
+      name="description"
+      content="Portfolio of Jasbeer Singh Chauhan. Specializing in high-concurrency C++ architecture and Node.js microservices."
+    />
+    <meta name="author" content="Jasbeer Singh Chauhan" />
+    <meta
+      property="og:title"
+      content="Jasbeer Singh Chauhan | Backend Engineer"
+    />
+    <meta
+      property="og:description"
+      content="Engineered for Performance & Scale. View my projects in systems programming and backend architecture."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="google-site-verification" content="xEpCu2Ulxiog8tOt2bjE2P79N0U3fwW3R7daAofejl8" />
+    
     <link rel="stylesheet" href="style.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
   </head>
   <body>
-    <canvas
-      id="network-canvas"
-      style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: -1;
-        opacity: 0.6;
-      "
-    ></canvas>
+    <canvas id="network-canvas" class="network-bg"></canvas>
     <header>
       <div class="container nav-wrapper">
         <a href="index.html" class="brand">JA_CHAUHAN</a>
@@ -37,29 +43,22 @@
     <main class="container">
       <section class="hero-split">
         <div class="hero-left">
-          <div style="margin-bottom: 1rem">
-            <span
-              class="badge"
-              style="
-                background: rgba(88, 166, 255, 0.1);
-                color: var(--accent-info);
-                border: 1px solid var(--accent-info);
-              "
-            >
+          <div class="mb-1">
+            <span class="badge hero-badge">
               ● Available for Backend Roles
             </span>
           </div>
 
           <h1>Engineered for<br />Performance & Scale.</h1>
 
-          <p class="text-muted" style="margin-bottom: 2rem; max-width: 500px">
+          <p class="text-muted hero-description">
             I design secure, high-concurrency backend systems. Specializing in
             <span class="text-header">C++ architecture</span> and
             <span class="text-header">Node.js microservices</span> that don't
             break under pressure.
           </p>
 
-          <div style="display: flex; gap: 1rem; align-items: center">
+          <div class="hero-actions">
             <a
               href="projectPage.html"
               class="btn-primary"
@@ -67,14 +66,7 @@
             >
               Review Architecture
             </a>
-            <a
-              href="contactPage.html"
-              class="text-muted"
-              style="
-                font-size: 0.9rem;
-                border-bottom: 1px solid var(--border-dim);
-              "
-            >
+            <a href="contactPage.html" class="text-muted btn-secondary-link">
               Initiate Handshake
             </a>
           </div>
@@ -88,15 +80,7 @@
                 <div class="win-btn min"></div>
                 <div class="win-btn max"></div>
               </div>
-              <span
-                style="
-                  margin-left: auto;
-                  font-size: 0.75rem;
-                  color: var(--text-muted);
-                "
-              >
-                ● LIVE MONITORING
-              </span>
+              <span class="terminal-live-text"> ● LIVE MONITORING </span>
             </div>
             <div class="terminal-body" id="log-container"></div>
           </div>
@@ -104,12 +88,12 @@
       </section>
     </main>
 
-    <nav class="mobile-nav">
+    <div class="mobile-nav">
       <a href="index.html" title="Home">H</a>
       <a href="projectPage.html" title="Projects">P</a>
       <a href="aboutMePage.html" title="About">A</a>
       <a href="contactPage.html" title="Contact">C</a>
-    </nav>
+    </div>
 
     <footer class="sys-footer">
       <div class="container status-bar">
@@ -117,12 +101,10 @@
           <div class="status-dot"></div>
           <span id="system-status">System Status: ONLINE</span>
         </div>
-        <div
-          class="status-item text-muted"
-          style="font-size: 0.7rem; gap: 1rem"
-        >
+        <div class="status-item text-muted footer-status-meta">
           <span id="utc-time">UTC: --:--:--</span>
           <span id="uptime-counter">UP: 00:00:00</span>
+          <span class="cmd-hint">CTRL + K</span>
         </div>
       </div>
 
@@ -131,20 +113,9 @@
         class="cmd-overlay"
         style="display: none; align-items: center"
       >
-        <div
-          class="cmd-box"
-          style="
-            max-width: 800px;
-            height: 500px;
-            display: flex;
-            flex-direction: column;
-          "
-        >
-          <div
-            class="cmd-header"
-            style="background: #1e1e1e; border-bottom: 1px solid #333"
-          >
-            <div class="flex-center" style="gap: 10px">
+        <div class="cmd-box modal-box-base">
+          <div class="cmd-header modal-header-base">
+            <div class="flex-center modal-title-wrapper">
               <span class="text-accent">●</span>
               <span id="modal-title" style="color: #fff">server.cpp</span>
             </div>
@@ -152,18 +123,7 @@
               [ CLOSE_CONNECTION ]
             </button>
           </div>
-          <pre
-            style="
-              background: #1e1e1e;
-              color: #d4d4d4;
-              padding: 1.5rem;
-              overflow: auto;
-              flex: 1;
-              margin: 0;
-              font-size: 0.85rem;
-            "
-            id="modal-code"
-          ></pre>
+          <pre class="modal-code-block" id="modal-code"></pre>
         </div>
       </div>
     </footer>

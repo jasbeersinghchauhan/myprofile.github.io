@@ -3,22 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>About | Jasbeer</title>
+
+    <title>Jasbeer Singh Chauhan | Backend Engineer</title>
+    <meta
+      name="description"
+      content="Portfolio of Jasbeer Singh Chauhan. Specializing in high-concurrency C++ architecture and Node.js microservices."
+    />
+    <meta name="author" content="Jasbeer Singh Chauhan" />
+
+    <meta
+      property="og:title"
+      content="Jasbeer Singh Chauhan | Backend Engineer"
+    />
+    <meta
+      property="og:description"
+      content="Engineered for Performance & Scale. View my projects in systems programming and backend architecture."
+    />
+    <meta property="og:type" content="website" />
+
     <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
   </head>
   <body>
-    <canvas
-      id="network-canvas"
-      style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: -1;
-        opacity: 0.6;
-      "
-    ></canvas>
+    <canvas id="network-canvas" class="network-bg"></canvas>
     <header>
       <div class="container nav-wrapper">
         <a href="index.html" class="brand">JA_CHAUHAN</a>
@@ -35,54 +42,23 @@
 
     <main class="container">
       <section class="hero-split" style="align-items: flex-start">
-        <div style="flex: 0 0 280px; width: 100%">
-          <div
-            class="card"
-            style="
-              padding: 1.5rem;
-              text-align: center;
-              transform: none !important;
-              transition: border-color 0.3s ease;
-            "
-          >
+        <div class="profile-col">
+          <div class="card profile-card">
             <img
               src="src/portrait.jpg"
               alt="Jasbeer Singh Chauhan"
-              style="
-                width: 100%;
-                height: auto;
-                border-radius: 4px;
-                border: 1px solid var(--border-dim);
-                margin-bottom: 1rem;
-                object-fit: cover;
-              "
+              class="profile-img"
             />
 
-            <h2
-              style="
-                font-size: 1.25rem;
-                color: var(--text-header);
-                margin-bottom: 0.5rem;
-              "
-            >
-              Jasbeer S. Chauhan
-            </h2>
+            <h2 class="profile-name">Jasbeer S. Chauhan</h2>
             <span class="tagline">Backend Engineer</span>
 
-            <div
-              style="
-                margin-top: 1.5rem;
-                text-align: left;
-                font-size: 0.85rem;
-                border-top: 1px solid var(--border-dim);
-                padding-top: 1.5rem;
-              "
-            >
-              <div style="margin-bottom: 12px">
+            <div class="profile-details">
+              <div class="detail-item">
                 <span class="text-muted">Education:</span><br />
                 <span class="text-header">B.Tech CSE (3rd Year)</span>
               </div>
-              <div style="margin-bottom: 12px">
+              <div class="detail-item">
                 <span class="text-muted">Institute:</span><br />
                 <span class="text-header">Graphic Era Hill Univ.</span>
               </div>
@@ -95,8 +71,7 @@
             <a
               href="https://drive.google.com/file/d/19UCPv7D9T3Xxx-QWEG0Esna5o_Z2GK9d/view?usp=sharing"
               target="_blank"
-              class="btn-primary"
-              style="width: 100%; margin-top: 1.5rem; text-align: center"
+              class="btn-primary w-100 mt-1-5 text-center"
             >
               Download Resume
             </a>
@@ -138,22 +113,18 @@
         </div>
 
         <div class="hero-right">
-          <div class="card" style="transform: none !important; padding: 2rem">
-            <h3 class="card-title text-accent" style="margin-bottom: 1.5rem">
-              ## System_Identity
-            </h3>
+          <div class="card system-identity-card">
+            <h3 class="card-title text-accent mb-1-5">## System_Identity</h3>
 
-            <div
-              style="font-size: 1rem; line-height: 1.8; margin-bottom: 2.5rem"
-            >
-              <p class="text-muted" style="margin-bottom: 1.2rem">
+            <div class="identity-text mb-2">
+              <p class="text-muted">
                 I specialize in the bridge between
                 <strong class="text-header">low-level performance</strong> and
                 <strong class="text-header">scalable web architecture</strong>.
                 While many focus on pixels, I focus on the high-concurrency
                 logic and data integrity that keep modern systems operational.
               </p>
-              <p class="text-muted" style="margin-bottom: 1.2rem">
+              <p class="text-muted">
                 My journey began with a deep dive into
                 <span class="text-blue">C++ and Socket Programming</span>, where
                 I learned to appreciate the nuances of memory management and
@@ -170,99 +141,32 @@
               </p>
             </div>
 
-            <div
-              style="
-                border-top: 1px dashed var(--border-dim);
-                padding-top: 2rem;
-              "
-            >
-              <h4
-                style="
-                  color: var(--text-header);
-                  margin-bottom: 1.5rem;
-                  font-size: 1.1rem;
-                "
-              >
-                Technical Arsenal
-              </h4>
+            <div class="tech-arsenal-section">
+              <h4 class="arsenal-header">Technical Arsenal</h4>
 
-              <div style="margin-bottom: 2rem">
-                <span
-                  style="
-                    font-size: 0.8rem;
-                    color: var(--text-muted);
-                    display: block;
-                    margin-bottom: 0.8rem;
-                    letter-spacing: 1px;
-                  "
+              <div class="mb-2">
+                <span class="arsenal-category-label"
                   >CORE SYSTEMS & CONCURRENCY</span
                 >
-                <div class="stack-list" style="padding: 0">
-                  <span
-                    class="badge"
-                    style="
-                      border: 1px solid var(--accent-primary);
-                      color: var(--accent-primary);
-                      background: transparent;
-                      padding: 4px 12px;
-                    "
-                    >C++20 (STL)</span
-                  >
-                  <span
-                    class="badge"
-                    style="
-                      border: 1px solid var(--accent-primary);
-                      color: var(--accent-primary);
-                      background: transparent;
-                      padding: 4px 12px;
-                    "
-                    >Multi-threading</span
-                  >
-                  <span
-                    class="badge"
-                    style="
-                      border: 1px solid var(--accent-primary);
-                      color: var(--accent-primary);
-                      background: transparent;
-                      padding: 4px 12px;
-                    "
-                    >Socket Programming</span
-                  >
-                  <span
-                    class="badge"
-                    style="
-                      border: 1px solid var(--accent-primary);
-                      color: var(--accent-primary);
-                      background: transparent;
-                      padding: 4px 12px;
-                    "
-                    >DSA & Optimization</span
-                  >
+                <div class="stack-list p-0">
+                  <span class="badge badge-outline">C++20 (STL)</span>
+                  <span class="badge badge-outline">Multi-threading</span>
+                  <span class="badge badge-outline">Socket Programming</span>
+                  <span class="badge badge-outline">DSA & Optimization</span>
                 </div>
               </div>
 
               <div>
-                <span
-                  style="
-                    font-size: 0.8rem;
-                    color: var(--text-muted);
-                    display: block;
-                    margin-bottom: 0.8rem;
-                    letter-spacing: 1px;
-                  "
+                <span class="arsenal-category-label"
                   >BACKEND INFRASTRUCTURE</span
                 >
-                <div class="stack-list" style="padding: 0">
-                  <span class="badge" style="padding: 4px 12px">Node.js</span>
-                  <span class="badge" style="padding: 4px 12px">Express</span>
-                  <span class="badge" style="padding: 4px 12px"
-                    >Redis (Pub/Sub)</span
-                  >
-                  <span class="badge" style="padding: 4px 12px">MongoDB</span>
-                  <span class="badge" style="padding: 4px 12px">MySQL</span>
-                  <span class="badge" style="padding: 4px 12px"
-                    >Git / GitHub</span
-                  >
+                <div class="stack-list p-0">
+                  <span class="badge badge-pad">Node.js</span>
+                  <span class="badge badge-pad">Express</span>
+                  <span class="badge badge-pad">Redis (Pub/Sub)</span>
+                  <span class="badge badge-pad">MongoDB</span>
+                  <span class="badge badge-pad">MySQL</span>
+                  <span class="badge badge-pad">Git / GitHub</span>
                 </div>
               </div>
             </div>
