@@ -6,7 +6,7 @@
 
 A terminal-inspired personal portfolio designed for a Backend Engineer. It bridges the gap between low-level systems programming and modern web architecture, featuring a simulated kernel boot sequence, interactive shell, and keyboard-driven navigation.
 
-**[View Live Demo](#)** _(Add your Vercel/Netlify link here)_
+**[View Live Demo](#)** _https://jasbeersinghchauhanportfolio.netlify.app_
 
 ---
 
